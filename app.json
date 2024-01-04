@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ChiDie",
-    "slug": "ChiDie",
+    "name": "ChiDieRebuild",
+    "slug": "ChiDieRebuild",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chowlett09.ChiDieRebuild"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "357b2255-9586-4ef3-ae16-6f09d8a56dcd"
+      }
     }
   }
 }
