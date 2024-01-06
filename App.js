@@ -1,14 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, SafeAreaView, StyleSheet, StatusBar } from 'react-native';
+import DieMenu from './DieMenu';
+import Colours from './Colours';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Just to prove I've changed it!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
+      <View style={[styles.container, styles.content, { width: '100%' }]}>
+        <DieMenu></DieMenu>
+      </View>
+    </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -16,6 +20,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  content: {
   },
   text: {
     color: '#f0f0ff'
