@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import Colours from "./Colours";
 
 const ScreenCommon = props => {
@@ -12,7 +12,7 @@ const ScreenCommon = props => {
         {props.children}
       </View>
       <View style={styles.button_area}>
-        <Text style={styles.button_text}>Buttons will go here.</Text>
+        {props.buttons}
       </View>
     </View>
   )
@@ -44,11 +44,9 @@ const styles = StyleSheet.create({
   },
   button_area: {
     flexBasis: 'auto',
-    backgroundColor: Colours._button_area_bg
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
-  button_text: {
-    color: Colours._button_area_fg
-  }
 })
 
 export default ScreenCommon;
