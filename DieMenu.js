@@ -1,5 +1,5 @@
-import React, { Component, useCallback } from "react";
-import { View, Text, StyleSheet, Linking, Alert } from "react-native";
+import React, { useCallback } from "react";
+import { Text, Linking, Alert, SafeAreaView, StatusBar } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
@@ -17,30 +17,23 @@ const DieMenu = () => {
   }, [visitTipLink]);
 
   const buttons = () => {
-    return dice.map(die => {
-      let colours = diceColours[die];
-      return <BottomButton label={die} colours={colours} perRow={4}/>
+    return dice.map((die, ix) => {
+      return <BottomButton label={die} key={die} colour={Colours.buttons[ix]} perRow={4}/>
     })
   };
 
   return (
-    <ScreenCommon title='Choose die size' buttons={buttons()}>
-      <Text style={Styles.body_text}>Like it?&nbsp;
-        <Text style={Styles.link_text} onPress={visitTipLink}>Leave me a tip!</Text>
-      </Text>
-    </ScreenCommon>
+    <SafeAreaView>
+      <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
+      <ScreenCommon title='Choose die size' buttons={buttons()}>
+        <Text style={Styles.body_text}>Like it?&nbsp;
+          <Text style={Styles.link_text} onPress={visitTipLink}>Leave me a tip!</Text>
+        </Text>
+      </ScreenCommon>
+    </SafeAreaView>
   )
 };
 
 const dice = ['d4', 'd6', 'd8', 'd10', 'd%', 'd12', 'd20'];
-const diceColours = {
-  d4: { bg: '#ff0000', fg: Colours.foreground },
-  d6: { bg: '#dd6600', fg: Colours.foreground },
-  d8: { bg: '#aa00aa', fg: Colours.foreground },
-  d10: { bg: '#6600aa', fg: Colours.foreground },
-  'd%': { bg: '#00aa00', fg: Colours.foreground },
-  d12: { bg: '#0070bb', fg: Colours.foreground },
-  d20: { bg: '#006600', fg: Colours.foreground },
-}
 
 export default DieMenu;

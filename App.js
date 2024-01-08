@@ -1,28 +1,19 @@
-import { View, SafeAreaView, StyleSheet, StatusBar } from 'react-native';
 import DieMenu from './DieMenu';
-import Colours from './Colours';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
-      <View style={[styles.container, styles.content, { width: '100%' }]}>
-        <DieMenu></DieMenu>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="DieMenu"
+          component={DieMenu}
+          options={{ headerShown: false }}>
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-  },
-  text: {
-    color: '#f0f0ff'
-  }
-});

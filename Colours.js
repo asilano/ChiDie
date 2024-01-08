@@ -3,8 +3,16 @@ const Colours = {
   foreground: '#f0f0f0',
   top_bar: '#f0f0f0',
   top_bar_fg: '#000000',
-  _button_area_bg: '#dfe',
-  _button_area_fg: '#000000'
+
+  buttons: [
+    '#ff0000',
+    '#dd6600',
+    '#aa00aa',
+    '#6600aa',
+    '#00aa00',
+    '#0070bb',
+    '#006600',
+  ],
 }
 
 export default Colours;

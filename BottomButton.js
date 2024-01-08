@@ -1,13 +1,14 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
+import Colours from "./Colours";
 
 const BottomButton = (props) => {
   let btnWidth = 100 / props.perRow - 1;
   let btnStyles = [
     styles.button_style,
     {
-      backgroundColor: props.colours.bg,
-      color: props.colours.fg,
+      backgroundColor: props.colour,
+      color: Colours.foreground,
       flexBasis: `${btnWidth}%`
     }
   ];
