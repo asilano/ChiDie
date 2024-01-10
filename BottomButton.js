@@ -13,7 +13,7 @@ const BottomButton = (props) => {
     }
   ];
   return (
-    <Text style={btnStyles}>
+    <Text style={btnStyles} onPress={props.action}>
       {props.label}
     </Text>
   )

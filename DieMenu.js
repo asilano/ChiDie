@@ -4,8 +4,16 @@ import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
 import BottomButton from "./BottomButton";
+import { useDieContext } from "./DieContext";
 
-const DieMenu = () => {
+function visitDieRollScreen(nav, dieSize, setDieSize) {
+  setDieSize(dieSize);
+  nav.navigate('DieRollScreen', { dieSize: dieSize });
+}
+
+const DieMenu = ({ navigation }) => {
+  const dieContext = useDieContext();
+
   const tipLink = 'https://ko-fi.com/chowlett';
   const visitTipLink = useCallback(async () => {
     const supported = Linking.canOpenURL(tipLink);
@@ -18,7 +26,14 @@ const DieMenu = () => {
 
   const buttons = () => {
     return dice.map((die, ix) => {
-      return <BottomButton label={die} key={die} colour={Colours.buttons[ix]} perRow={4}/>
+      return (
+        <BottomButton
+          label={die}
+          key={die}
+          colour={Colours.buttons[ix]}
+          perRow={4}
+          action={() => visitDieRollScreen(navigation, die, dieContext.setDieSize)}/>
+      )
     })
   };
 
