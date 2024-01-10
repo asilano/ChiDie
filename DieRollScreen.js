@@ -18,7 +18,7 @@ const DieRollScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
-      <ScreenCommon title='This is the die-roll screen' buttons={[]}>
+      <ScreenCommon title='This is the die-roll screen' backNavigator={navigation} buttons={[]}>
         <Text style={Styles.body_text}>Your die size is: {dieContext.dieSize}!</Text>
       </ScreenCommon>
     </SafeAreaView>

@@ -1,12 +1,32 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import Colours from "./Colours";
+import { AntDesign } from "@expo/vector-icons";
+
+function maybeBackButton(backNavigator) {
+  if (backNavigator) {
+    return (
+      <>
+      <AntDesign
+        name="arrowleft"
+        size={fontSize}
+        onPress={() => backNavigator.goBack()}>
+      </AntDesign>
+      &nbsp;&nbsp;
+      </>)
+  }
+}
 
 const ScreenCommon = props => {
   return (
     <View style={styles.container}>
       <View style={styles.top_bar}>
-        <Text style={styles.top_bar_text}>{props.title}</Text>
+        <Text style={styles.top_bar_text}>
+          {
+            maybeBackButton(props.backNavigator)
+          }
+          {props.title}
+        </Text>
       </View>
       <View style={styles.blank_space}>
         {props.children}
@@ -36,7 +56,7 @@ const styles = StyleSheet.create({
   top_bar: {
     backgroundColor: Colours.top_bar,
     flexBasis: 'auto',
-    padding: 10,
+    padding: 15,
     paddingLeft: 20
   },
   top_bar_text: {
