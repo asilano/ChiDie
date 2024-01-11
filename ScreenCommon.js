@@ -6,14 +6,12 @@ import { AntDesign } from "@expo/vector-icons";
 function maybeBackButton(backNavigator) {
   if (backNavigator) {
     return (
-      <>
       <AntDesign
         name="arrowleft"
         size={fontSize}
+        style={{ paddingRight: fontSize, verticalAlign: 'middle' }}
         onPress={() => backNavigator.goBack()}>
-      </AntDesign>
-      &nbsp;&nbsp;
-      </>)
+      </AntDesign>)
   }
 }
 
@@ -21,10 +19,10 @@ const ScreenCommon = props => {
   return (
     <View style={styles.container}>
       <View style={styles.top_bar}>
+        {
+          maybeBackButton(props.backNavigator)
+        }
         <Text style={styles.top_bar_text}>
-          {
-            maybeBackButton(props.backNavigator)
-          }
           {props.title}
         </Text>
       </View>
@@ -56,6 +54,7 @@ const styles = StyleSheet.create({
   top_bar: {
     backgroundColor: Colours.top_bar,
     flexBasis: 'auto',
+    flexDirection: 'row',
     padding: 15,
     paddingLeft: 20
   },
