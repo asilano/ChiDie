@@ -13,6 +13,8 @@ const Colours = {
     '#0070bb',
     '#006600',
   ],
+
+  chart: "#008090"
 }
 
 export default Colours;

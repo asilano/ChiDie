@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from "react";
-import { Text, Linking, Alert, SafeAreaView, StatusBar } from "react-native";
+import { Text, Linking, Alert, SafeAreaView, StatusBar, Dimensions, View } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
 import BottomButton from "./BottomButton";
 import { useDieContext } from "./DieContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+import ChartTheme from "./ChartTheme";
 
 async function readCounts(dieSize, setFaceCounts) {
   try {
@@ -34,8 +36,8 @@ function zeroedFaceCounts(dieSize) {
 }
 
 const buttonFaces = {
-  'd4': {faces: ["1", "2", "3", "4"], perRow: 4},
-  // 'd6',
+  'd4': { faces: ["1", "2", "3", "4"], perRow: 4},
+  'd6': { faces: ["1", "2", "3", "4", "5", "6"], perRow: 3},
   // 'd8',
   // 'd10',
   // 'd%',
@@ -47,6 +49,9 @@ const DieRollScreen = ({ navigation }) => {
   const dieContext = useDieContext();
   const dieSize = dieContext.dieSize;
   const [faceCounts, setFaceCounts] = useState(zeroedFaceCounts(dieSize));
+  const [chartWidth, setChartWidth] = useState(0);
+  const [chartHeight, setChartHeight] = useState(0);
+
   readCounts(dieSize, setFaceCounts);
 
   const buttons = () => {
@@ -71,8 +76,20 @@ const DieRollScreen = ({ navigation }) => {
     <SafeAreaView>
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
       <ScreenCommon title='This is the die-roll screen' backNavigator={navigation} buttons={buttons()}>
-        <Text style={Styles.body_text}>Your die size is: {dieSize}!</Text>
-        <Text style={Styles.body_text}>You've rolled this die {JSON.stringify(faceCounts)} time(s)!</Text>
+        <View style={{ flexGrow: 1, borderWidth: 2 }}>
+          <Text style={[Styles.body_text, { fontSize: 50, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
+          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme}>
+              <VictoryAxis
+                tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
+                tickFormat={buttonFaces[dieSize].faces}
+              />
+              <VictoryBar
+                data={faceCounts}
+                labels={faceCounts}
+              />
+          </VictoryChart>
+          <View style={{ flexGrow: 1 }} />
+        </View>
       </ScreenCommon>
     </SafeAreaView>
   )
