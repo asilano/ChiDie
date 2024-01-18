@@ -36,13 +36,13 @@ function zeroedFaceCounts(dieSize) {
 }
 
 const buttonFaces = {
-  'd4': { faces: ["1", "2", "3", "4"], perRow: 4},
-  'd6': { faces: ["1", "2", "3", "4", "5", "6"], perRow: 3},
-  // 'd8',
-  // 'd10',
-  // 'd%',
-  // 'd12',
-  // 'd20'
+  'd4': { faces: [1, 2, 3, 4], perRow: 4},
+  'd6': { faces: [1, 2, 3, 4, 5, 6], perRow: 3},
+  'd8': { faces: [1, 2, 3, 4, 5, 6, 7, 8], perRow: 4 },
+  'd10': { faces: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], perRow: 5 },
+  'd%':  { faces: ["10", "20", "30", "40", "50", "60", "70", "80", "90", "00"], perRow: 5 },
+  'd12': { faces: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], perRow: 4 },
+  'd20': { faces: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], perRow: 5 }
 }
 
 const DieRollScreen = ({ navigation }) => {
@@ -61,8 +61,9 @@ const DieRollScreen = ({ navigation }) => {
         <BottomButton
           label={face}
           key={face}
-          colour={Colours.buttons[ix]}
+          colour={Colours.buttons[ix % Colours.buttons.length]}
           perRow={perRow}
+          small
           action={() => {
                     faceCounts[ix]++;
                     storeCounts(dieSize, faceCounts).then(() => setFaceCounts(faceCounts));
@@ -76,17 +77,17 @@ const DieRollScreen = ({ navigation }) => {
     <SafeAreaView>
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
       <ScreenCommon title='This is the die-roll screen' backNavigator={navigation} buttons={buttons()}>
-        <View style={{ flexGrow: 1, borderWidth: 2 }}>
-          <Text style={[Styles.body_text, { fontSize: 50, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
-          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme}>
-              <VictoryAxis
-                tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
-                tickFormat={buttonFaces[dieSize].faces}
-              />
-              <VictoryBar
-                data={faceCounts}
-                labels={faceCounts}
-              />
+        <View style={{ flexGrow: 1 }}>
+          <Text style={[Styles.body_text, { fontSize: 10, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
+          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme} padding={{ top: 50, right: 25, bottom: 50, left: 10 }}>
+            <VictoryAxis
+              tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
+              tickFormat={buttonFaces[dieSize].faces}
+            />
+            <VictoryBar
+              data={faceCounts}
+              labels={faceCounts}
+            />
           </VictoryChart>
           <View style={{ flexGrow: 1 }} />
         </View>

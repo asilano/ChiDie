@@ -12,6 +12,12 @@ const BottomButton = (props) => {
       flexBasis: `${btnWidth}%`
     }
   ];
+  if (props.small) {
+    btnStyles.push({
+      paddingBottom: 15,
+      paddingTop: 15
+    });
+  }
   return (
     <Text style={btnStyles} onPress={props.action}>
       {props.label}

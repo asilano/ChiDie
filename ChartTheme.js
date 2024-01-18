@@ -5,7 +5,6 @@ export default ChartTheme = {
     style: {
       data: {
         fill: Colours.chart,
-        padding: 8,
         strokeWidth: 0
       },
       labels: {
@@ -33,5 +32,5 @@ export default ChartTheme = {
         textAnchor: "end"
       }
     }
-  }
+  },
 }
