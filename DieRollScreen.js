@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { Text, Linking, Alert, SafeAreaView, StatusBar, Dimensions, View } from "react-native";
+import React, { useState } from "react";
+import { Text, SafeAreaView, StatusBar, View } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
 import BottomButton from "./BottomButton";
 import { useDieContext } from "./DieContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+import { VictoryAxis, VictoryBar, VictoryChart } from "victory-native";
 import ChartTheme from "./ChartTheme";
 
 async function readCounts(dieSize, setFaceCounts) {
@@ -49,8 +49,7 @@ const DieRollScreen = ({ navigation }) => {
   const dieContext = useDieContext();
   const dieSize = dieContext.dieSize;
   const [faceCounts, setFaceCounts] = useState(zeroedFaceCounts(dieSize));
-  const [chartWidth, setChartWidth] = useState(0);
-  const [chartHeight, setChartHeight] = useState(0);
+  const [prevFaceCounts, setPrevFaceCounts] = useState(faceCounts);
 
   readCounts(dieSize, setFaceCounts);
 
@@ -65,21 +64,39 @@ const DieRollScreen = ({ navigation }) => {
           perRow={perRow}
           small
           action={() => {
+                    const oldFaceCounts = Array.from(faceCounts);
                     faceCounts[ix]++;
-                    storeCounts(dieSize, faceCounts).then(() => setFaceCounts(faceCounts));
+                    storeCounts(dieSize, faceCounts).then(() => {
+                      setPrevFaceCounts(oldFaceCounts);
+                      setFaceCounts(faceCounts)
+                    });
                   }}
-          />
+        />
       )
     })
   };
 
+  const resetRolls = () => {
+    const zeros = zeroedFaceCounts(dieSize);
+    setPrevFaceCounts(faceCounts);
+    storeCounts(dieSize, zeros).then(() => setFaceCounts(zeros));
+  }
+
+  const undoLast = () => {
+    storeCounts(dieSize, prevFaceCounts).then(() => setFaceCounts(prevFaceCounts));
+  }
+
   return (
     <SafeAreaView>
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
-      <ScreenCommon title='This is the die-roll screen' backNavigator={navigation} buttons={buttons()}>
+      <ScreenCommon title='Roll your die' backNavigator={navigation} buttons={buttons()}>
         <View style={{ flexGrow: 1 }}>
-          <Text style={[Styles.body_text, { fontSize: 10, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
-          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme} padding={{ top: 50, right: 25, bottom: 50, left: 10 }}>
+          <View style={{ flexGrow: 1 }}>
+            <Text style={[Styles.body_text, { fontSize: 10, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
+            <Text style={[Styles.body_text, Styles.reset_button]} onPress={resetRolls}>RESET</Text>
+            <Text style={[Styles.body_text, Styles.undo_button]} onPress={undoLast}>UNDO</Text>
+          </View>
+          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme}>
             <VictoryAxis
               tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
               tickFormat={buttonFaces[dieSize].faces}

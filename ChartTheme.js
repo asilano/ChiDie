@@ -33,4 +33,7 @@ export default ChartTheme = {
       }
     }
   },
+  chart: {
+    padding: { top: 50, right: 25, bottom: 50, left: 10 }
+  }
 }

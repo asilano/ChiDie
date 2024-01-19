@@ -14,7 +14,9 @@ const Colours = {
     '#006600',
   ],
 
-  chart: "#008090"
+  chart: "#008090",
+  reset: "#0070bb",
+  undo: "#0070bb",
 }
 
 export default Colours;
