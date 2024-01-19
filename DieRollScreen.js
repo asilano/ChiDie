@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, SafeAreaView, StatusBar, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, SafeAreaView, StatusBar, View, Animated } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
@@ -50,6 +50,16 @@ const DieRollScreen = ({ navigation }) => {
   const dieSize = dieContext.dieSize;
   const [faceCounts, setFaceCounts] = useState(zeroedFaceCounts(dieSize));
   const [prevFaceCounts, setPrevFaceCounts] = useState(faceCounts);
+  const [facePressed, setFacePressed] = useState(undefined);
+  const fadeOut = useRef(new Animated.Value(1));
+
+  useEffect(() => {
+    Animated.timing(fadeOut.current, {
+      toValue: 0,
+      duration: 1000,
+      useNativeDriver: true
+    }).start();
+  }, [facePressed]);
 
   readCounts(dieSize, setFaceCounts);
 
@@ -67,8 +77,10 @@ const DieRollScreen = ({ navigation }) => {
                     const oldFaceCounts = Array.from(faceCounts);
                     faceCounts[ix]++;
                     storeCounts(dieSize, faceCounts).then(() => {
+                      fadeOut.current.setValue(1);
+                      setFacePressed(face);
                       setPrevFaceCounts(oldFaceCounts);
-                      setFaceCounts(faceCounts)
+                      setFaceCounts(faceCounts);
                     });
                   }}
         />
@@ -91,8 +103,12 @@ const DieRollScreen = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
       <ScreenCommon title='Roll your die' backNavigator={navigation} buttons={buttons()}>
         <View style={{ flexGrow: 1 }}>
-          <View style={{ flexGrow: 1 }}>
-            <Text style={[Styles.body_text, { fontSize: 10, flexGrow: 1 }]}>{JSON.stringify(faceCounts)}</Text>
+          <View style={{ flexBasis: 50, flexGrow: 1 }}>
+            <Animated.Text
+              style={[Styles.body_text, { fontSize: 60, fontWeight: "bold", opacity: fadeOut.current }]}
+            >
+              {facePressed}
+            </Animated.Text>
             <Text style={[Styles.body_text, Styles.reset_button]} onPress={resetRolls}>RESET</Text>
             <Text style={[Styles.body_text, Styles.undo_button]} onPress={undoLast}>UNDO</Text>
           </View>
