@@ -8,6 +8,7 @@ import { useDieContext } from "./DieContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { VictoryAxis, VictoryBar, VictoryChart } from "victory-native";
 import ChartTheme from "./ChartTheme";
+import BalanceCheck from "./BalanceCheck";
 
 async function readCounts(dieSize, setFaceCounts) {
   try {
@@ -59,7 +60,7 @@ const DieRollScreen = ({ navigation }) => {
       duration: 1000,
       useNativeDriver: true
     }).start();
-  }, [facePressed]);
+  }, [faceCounts]);
 
   readCounts(dieSize, setFaceCounts);
 
@@ -122,7 +123,9 @@ const DieRollScreen = ({ navigation }) => {
               labels={faceCounts}
             />
           </VictoryChart>
-          <View style={{ flexGrow: 1 }} />
+          <View style={{ flexGrow: 1 }}>
+            <BalanceCheck dieSize={dieSize} rolls={faceCounts} />
+          </View>
         </View>
       </ScreenCommon>
     </SafeAreaView>
