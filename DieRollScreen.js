@@ -52,15 +52,19 @@ const DieRollScreen = ({ navigation }) => {
   const [faceCounts, setFaceCounts] = useState(zeroedFaceCounts(dieSize));
   const [prevFaceCounts, setPrevFaceCounts] = useState(faceCounts);
   const [facePressed, setFacePressed] = useState(undefined);
+  const [faceWasPressed, setFaceWasPressed] = useState(false);
   const fadeOut = useRef(new Animated.Value(1));
 
   useEffect(() => {
+    fadeOut.current.setValue(1);
+
     Animated.timing(fadeOut.current, {
       toValue: 0,
+      delay: 500,
       duration: 1000,
       useNativeDriver: true
     }).start();
-  }, [faceCounts]);
+  }, [faceWasPressed]);
 
   readCounts(dieSize, setFaceCounts);
 
@@ -78,8 +82,8 @@ const DieRollScreen = ({ navigation }) => {
                     const oldFaceCounts = Array.from(faceCounts);
                     faceCounts[ix]++;
                     storeCounts(dieSize, faceCounts).then(() => {
-                      fadeOut.current.setValue(1);
                       setFacePressed(face);
+                      setFaceWasPressed(b => !b);
                       setPrevFaceCounts(oldFaceCounts);
                       setFaceCounts(faceCounts);
                     });
