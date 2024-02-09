@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "ChiDieRebuild",
-    "slug": "ChiDieRebuild",
-    "version": "1.0.0",
+    "name": "ChiDie",
+    "slug": "ChiDie",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#E6E5E5"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,17 +19,17 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#E6E5E5"
       },
-      "package": "com.chowlett09.ChiDieRebuild"
+      "package": "com.chowlett09.ChiDie"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "357b2255-9586-4ef3-ae16-6f09d8a56dcd"
+        "projectId": "b39813d0-6a9d-4d28-b39c-17de45f332ff"
       }
     }
   }
