@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Text, SafeAreaView, StatusBar, View, Animated } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
@@ -10,30 +10,29 @@ import { VictoryAxis, VictoryBar, VictoryChart } from "victory-native";
 import ChartTheme from "./ChartTheme";
 import BalanceCheck from "./BalanceCheck";
 
-async function readCounts(dieSize, setFaceCounts) {
+async function readCounts(dieSize, faceCounts) {
   try {
     const stored = await AsyncStorage.getItem(dieSize);
+
     if (stored !== null) {
-      setFaceCounts(JSON.parse(stored));
+      JSON.parse(stored).forEach((count, ix) => {
+        faceCounts[ix][1](count);
+      })
     } else {
-      setFaceCounts(zeroedFaceCounts(dieSize));
+      faceCounts.forEach((pair) => pair[1](0))
     }
   } catch (e) {
-    setFaceCounts(zeroedFaceCounts(dieSize));
+    faceCounts.forEach((pair) => pair[1](0))
   }
 }
 
 async function storeCounts(dieSize, faceCounts) {
   try {
-    const jsonValue = JSON.stringify(faceCounts);
+    const jsonValue = JSON.stringify(faceCounts.map(pair => pair[0]));
     await AsyncStorage.setItem(dieSize, jsonValue);
   } catch (e) {
     // saving error
   }
-}
-
-function zeroedFaceCounts(dieSize) {
-  return buttonFaces[dieSize].faces.map(() => 0)
 }
 
 const buttonFaces = {
@@ -49,11 +48,16 @@ const buttonFaces = {
 const DieRollScreen = ({ navigation }) => {
   const dieContext = useDieContext();
   const dieSize = dieContext.dieSize;
-  const [faceCounts, setFaceCounts] = useState(zeroedFaceCounts(dieSize));
-  const [prevFaceCounts, setPrevFaceCounts] = useState(faceCounts);
+
+  faceCounts = buttonFaces[dieSize].faces.map(() => {
+    return useState(0);
+  });
+
   const [facePressed, setFacePressed] = useState(undefined);
   const [faceWasPressed, setFaceWasPressed] = useState(false);
+  const [ready, setReady] = useState(false);
   const fadeOut = useRef(new Animated.Value(1));
+  const [_, forceUpdate] = useReducer(x => x + 1, 0);
 
   useEffect(() => {
     fadeOut.current.setValue(1);
@@ -66,8 +70,6 @@ const DieRollScreen = ({ navigation }) => {
     }).start();
   }, [faceWasPressed]);
 
-  readCounts(dieSize, setFaceCounts);
-
   const buttons = () => {
     const perRow = buttonFaces[dieSize].perRow;
     return buttonFaces[dieSize].faces.map((face, ix) => {
@@ -79,13 +81,10 @@ const DieRollScreen = ({ navigation }) => {
           perRow={perRow}
           small
           action={() => {
-                    const oldFaceCounts = Array.from(faceCounts);
-                    faceCounts[ix]++;
+                    faceCounts[ix][0] += 1;
                     storeCounts(dieSize, faceCounts).then(() => {
-                      setFacePressed(face);
+                      setFacePressed(ix);
                       setFaceWasPressed(b => !b);
-                      setPrevFaceCounts(oldFaceCounts);
-                      setFaceCounts(faceCounts);
                     });
                   }}
         />
@@ -94,14 +93,45 @@ const DieRollScreen = ({ navigation }) => {
   };
 
   const resetRolls = () => {
-    const zeros = zeroedFaceCounts(dieSize);
-    setPrevFaceCounts(faceCounts);
-    storeCounts(dieSize, zeros).then(() => setFaceCounts(zeros));
+    const zeros = buttonFaces[dieSize].faces.map(() => [0, null]);
+    storeCounts(dieSize, zeros);
+    forceUpdate();
   }
 
   const undoLast = () => {
-    storeCounts(dieSize, prevFaceCounts).then(() => setFaceCounts(prevFaceCounts));
+    faceCounts[facePressed][0] -= 1;
+    storeCounts(dieSize, faceCounts);
+    forceUpdate();
   }
+
+  readCounts(dieSize, faceCounts).then(() => setReady(true));
+
+  const chartArea = () => {
+    if (ready) {
+      return (
+        <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme}>
+          <VictoryAxis
+            tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
+            tickFormat={buttonFaces[dieSize].faces}
+          />
+          <VictoryBar
+            data={faceCounts.map(pair => pair[0])}
+            labels={faceCounts.map(pair => pair[0])}
+          />
+        </VictoryChart>
+      )
+    }
+  };
+
+  const balanceArea = () => {
+    if (ready) {
+      return (
+        <View style={{ flexGrow: 1 }}>
+          <BalanceCheck dieSize={dieSize} rolls={faceCounts.map(pair => pair[0])} />
+        </View>
+      )
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -112,24 +142,13 @@ const DieRollScreen = ({ navigation }) => {
             <Animated.Text
               style={[Styles.body_text, { fontSize: 60, fontWeight: "bold", opacity: fadeOut.current }]}
             >
-              {facePressed}
+              {buttonFaces[dieSize].faces[facePressed]}
             </Animated.Text>
             <Text style={[Styles.body_text, Styles.reset_button]} onPress={resetRolls}>RESET</Text>
             <Text style={[Styles.body_text, Styles.undo_button]} onPress={undoLast}>UNDO</Text>
           </View>
-          <VictoryChart style={{ flexGrow: 2 }} theme={ChartTheme}>
-            <VictoryAxis
-              tickValues={buttonFaces[dieSize].faces.map((_, ix) => ix)}
-              tickFormat={buttonFaces[dieSize].faces}
-            />
-            <VictoryBar
-              data={faceCounts}
-              labels={faceCounts}
-            />
-          </VictoryChart>
-          <View style={{ flexGrow: 1 }}>
-            <BalanceCheck dieSize={dieSize} rolls={faceCounts} />
-          </View>
+          { chartArea() }
+          { balanceArea() }
         </View>
       </ScreenCommon>
     </SafeAreaView>

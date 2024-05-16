@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import Colours from "./Colours";
-import { AntDesign } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 function maybeBackButton(backNavigator) {
   if (backNavigator) {
@@ -9,9 +9,10 @@ function maybeBackButton(backNavigator) {
       <AntDesign
         name="arrowleft"
         size={fontSize}
+        color="black"
         style={{ paddingRight: fontSize, verticalAlign: 'middle' }}
-        onPress={() => backNavigator.goBack()}>
-      </AntDesign>)
+        onPress={() => backNavigator.goBack()} />
+    )
   }
 }
 

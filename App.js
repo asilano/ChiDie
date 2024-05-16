@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DieRollScreen from './DieRollScreen';
 import DieContext from './DieContext';
 import { useState } from 'react';
+import 'react-native-url-polyfill/auto';
 
 const Stack = createNativeStackNavigator();
 
