@@ -1,10 +1,5 @@
 import { Text } from "react-native";
 import Styles from "./Styles";
-import chi2gof from "@stdlib/stats-chi2gof";
-
-function totalRolls(rolls) {
-  return rolls.reduce((acc, val) => { return acc + val }, 0);
-}
 
 function balanceReport(dieSize, rolls) {
   const rollCount = totalRolls(rolls);

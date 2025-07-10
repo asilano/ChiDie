@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Text, Linking, Alert, SafeAreaView, StatusBar } from "react-native";
+import { View, Text, Linking, Alert, SafeAreaView, StatusBar } from "react-native";
 import Colours from "./Colours";
 import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
@@ -10,6 +10,8 @@ function visitDieRollScreen(nav, dieSize, setDieSize) {
   setDieSize(dieSize);
   nav.navigate('DieRollScreen', { dieSize: dieSize });
 }
+
+const resetRolls = () => {}
 
 const DieMenu = ({ navigation }) => {
   const dieContext = useDieContext();
@@ -41,9 +43,26 @@ const DieMenu = ({ navigation }) => {
     <SafeAreaView>
       <StatusBar barStyle="dark-content" backgroundColor={Colours.top_bar}/>
       <ScreenCommon title='Choose die size' buttons={buttons()}>
-        <Text style={Styles.body_text}>Like it?&nbsp;
-          <Text style={Styles.link_text} onPress={visitTipLink}>Leave me a tip!</Text>
-        </Text>
+        <View style={{ flexBasis: 50 }}>
+          <Text style={Styles.body_text}>Like it?&nbsp;
+            <Text style={Styles.link_text} onPress={visitTipLink}>Leave me a tip!</Text>
+          </Text>
+        </View>
+        <View style={{ flexBasis: 50 }}>
+          <Text style={[Styles.body_text, Styles.reset_button]} onPress={resetRolls}>RESET ALL</Text>
+        </View>
+        <View style={{ flexGrow: 1, margin: 10 }}>
+          {dice.map((die, ix) => {
+            return (
+              <Text key={die} style={[Styles.body_text,
+                { flexGrow: 1,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  color: Colours.buttons[ix],
+                  verticalAlign: "middle" }]}>{die}: </Text>
+            )
+          })}
+        </View>
       </ScreenCommon>
     </SafeAreaView>
   )

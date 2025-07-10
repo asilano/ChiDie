@@ -5,35 +5,10 @@ import ScreenCommon from "./ScreenCommon";
 import Styles from "./Styles";
 import BottomButton from "./BottomButton";
 import { useDieContext } from "./DieContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { readCounts, storeCounts } from "./RollStorage";
 import { VictoryAxis, VictoryBar, VictoryChart } from "victory-native";
 import ChartTheme from "./ChartTheme";
 import BalanceCheck from "./BalanceCheck";
-
-async function readCounts(dieSize, faceCounts) {
-  try {
-    const stored = await AsyncStorage.getItem(dieSize);
-
-    if (stored !== null) {
-      JSON.parse(stored).forEach((count, ix) => {
-        faceCounts[ix][1](count);
-      })
-    } else {
-      faceCounts.forEach((pair) => pair[1](0))
-    }
-  } catch (e) {
-    faceCounts.forEach((pair) => pair[1](0))
-  }
-}
-
-async function storeCounts(dieSize, faceCounts) {
-  try {
-    const jsonValue = JSON.stringify(faceCounts.map(pair => pair[0]));
-    await AsyncStorage.setItem(dieSize, jsonValue);
-  } catch (e) {
-    // saving error
-  }
-}
 
 const buttonFaces = {
   'd4': { faces: [1, 2, 3, 4], perRow: 4},
